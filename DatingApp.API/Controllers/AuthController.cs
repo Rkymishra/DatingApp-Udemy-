@@ -42,7 +42,7 @@ namespace DatingApp.API.Controllers {
             try {
                 var userFromRepo = await _repo.Login (userToLoginDto.Username.ToLower (), userToLoginDto.Password);
                 if (userFromRepo == null) {
-                    return Unauthorized ();
+                    return Unauthorized("Wrong Username or password");
                 }
                 var claims = new [] {
                     new Claim (ClaimTypes.NameIdentifier, userFromRepo.Id.ToString ()),
