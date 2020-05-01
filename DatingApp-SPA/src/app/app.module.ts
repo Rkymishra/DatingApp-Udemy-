@@ -1,4 +1,8 @@
-import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import {
+  BrowserModule,
+  HammerGestureConfig,
+  HAMMER_GESTURE_CONFIG,
+} from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -28,7 +32,8 @@ import { MemberListResolver } from './_resolvers/member-list.resolver';
 import { MemberEditComponent } from './member/member-edit/member-edit.component';
 import { MemberEditResolver } from './_resolvers/member-edit.resolver';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
-
+import { PhotoEditorComponent } from './member/photo-editor/photo-editor.component';
+import { FileUploadModule } from 'ng2-file-upload';
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
@@ -51,7 +56,8 @@ export class CustomHammerConfig extends HammerGestureConfig {
     MessagesComponent,
     MemberCardComponent,
     MemberDetailComponent,
-    MemberEditComponent
+    MemberEditComponent,
+    PhotoEditorComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,6 +67,7 @@ export class CustomHammerConfig extends HammerGestureConfig {
     TabsModule.forRoot(),
     RouterModule.forRoot(appRoutes),
     NgxGalleryModule,
+    FileUploadModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
@@ -81,8 +88,9 @@ export class CustomHammerConfig extends HammerGestureConfig {
     MemberEditResolver,
     PreventUnsavedChanges,
     {
-      provide  : HAMMER_GESTURE_CONFIG, useClass : CustomHammerConfig
-    }
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: CustomHammerConfig,
+    },
   ],
   bootstrap: [AppComponent],
 })
