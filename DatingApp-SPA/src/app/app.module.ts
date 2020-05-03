@@ -12,6 +12,8 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { RouterModule } from '@angular/router';
 import { NgxGalleryModule } from 'ngx-gallery-9';
+import { TimeagoModule } from 'ngx-timeago';
+
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
@@ -59,7 +61,7 @@ export class CustomHammerConfig extends HammerGestureConfig {
     MemberCardComponent,
     MemberDetailComponent,
     MemberEditComponent,
-    PhotoEditorComponent,
+    PhotoEditorComponent
   ],
   imports: [
     BrowserModule,
@@ -73,6 +75,7 @@ export class CustomHammerConfig extends HammerGestureConfig {
     NgxGalleryModule,
     BsDatepickerModule.forRoot(),
     FileUploadModule,
+    TimeagoModule.forRoot(),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
