@@ -34,8 +34,9 @@ namespace DatingApp.API.Controllers {
             }
             return Ok (messageFromRepo);
         }
+
         [HttpGet]
-        public async Task<IActionResult> GetMessagesForUser (int userId, [FromQuery]MessageParams messageParams) {
+        public async Task<IActionResult> GetMessagesForUser (int userId, [FromQuery] MessageParams messageParams) {
             if (userId != int.Parse (User.FindFirst (ClaimTypes.NameIdentifier).Value)) {
                 return Unauthorized ();
             }
@@ -45,19 +46,21 @@ namespace DatingApp.API.Controllers {
             Response.AddPagination (messageFromRepo.CurrentPage, messageFromRepo.PageSize, messageFromRepo.TotalCount, messageFromRepo.TotalPage);
             return Ok (messages);
         }
-        [HttpGet("thread/{recipientId}")]
-        public async Task<IActionResult> GetMessageThread(int userId, int recipientId){
+
+        [HttpGet ("thread/{recipientId}")]
+        public async Task<IActionResult> GetMessageThread (int userId, int recipientId) {
             if (userId != int.Parse (User.FindFirst (ClaimTypes.NameIdentifier).Value)) {
                 return Unauthorized ();
             }
-            var messagesFromRepo = await _repo.GetMessageThread(userId, recipientId);
-            var messageThread  = _mapper.Map<IEnumerable<MessageToReturnDto>>(messagesFromRepo);
-            return Ok(messageThread);
+            var messagesFromRepo = await _repo.GetMessageThread (userId, recipientId);
+            var messageThread = _mapper.Map<IEnumerable<MessageToReturnDto>> (messagesFromRepo);
+            return Ok (messageThread);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateMessage (int userId, MessageToCreateDto messageToCreateDto) {
-            if (userId != int.Parse (User.FindFirst (ClaimTypes.NameIdentifier).Value)) {
+            var sender = await _repo.GetUser (userId);
+            if (sender.Id != int.Parse (User.FindFirst (ClaimTypes.NameIdentifier).Value)) {
                 return Unauthorized ();
             }
             messageToCreateDto.SenderId = userId;
@@ -66,8 +69,8 @@ namespace DatingApp.API.Controllers {
             var message = _mapper.Map<Message> (messageToCreateDto);
             _repo.Add (message);
 
-            var messageToReturn = _mapper.Map<MessageToCreateDto> (message);
             if (await _repo.SaveAll ()) {
+                var messageToReturn = _mapper.Map<MessageToReturnDto> (message);
                 return CreatedAtRoute ("GetMessage", new { userId, id = message.Id }, messageToReturn);
             }
             throw new System.Exception ("Message creating failed on save!");
