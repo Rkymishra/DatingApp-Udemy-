@@ -24,7 +24,7 @@ namespace DatingApp.API.Data {
 
                 foreach (var user in users) {
                     userManager.CreateAsync (user, "password").Wait ();
-                    userManager.AddToRoleAsync (user, "Member");
+                    userManager.AddToRoleAsync (user, "Member").Wait();
                 }
 
                 var adminUser = new User {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -48,13 +49,13 @@ namespace DatingApp.API.Controllers {
         [HttpPost ("login")]
         public async Task<IActionResult> Login (UserToLoginDto userToLoginDto) {
             try {
-                var user = await _userManager.FindByNameAsync (userToLoginDto.Username);
-                var result = await _signInManager.CheckPasswordSignInAsync (user, userToLoginDto.Password, false);
+                var _user = await _userManager.FindByNameAsync (userToLoginDto.Username);
+                var result = await _signInManager.CheckPasswordSignInAsync (_user, userToLoginDto.Password, false);
                 if (result.Succeeded) {
-                    var appUser = _mapper.Map<UserForListDto> (user);
+                    var appUser = _mapper.Map<UserForListDto> (_user);
                     return Ok (new {
-                        token = GenerateJwtToken (user),
-                            user = appUser
+                        token = GenerateJwtToken (_user).Result,
+                        user = appUser
                     });
                 } else {
                     return Unauthorized ("Wrong Username or password");
@@ -64,11 +65,17 @@ namespace DatingApp.API.Controllers {
                 throw new Exception ("Exception while logging in ");
             }
         }
-        private string GenerateJwtToken (User user) {
-            var claims = new [] {
+        private async Task<string> GenerateJwtToken (User user) {
+            var claims = new List<Claim> {
                 new Claim (ClaimTypes.NameIdentifier, user.Id.ToString ()),
                 new Claim (ClaimTypes.Name, user.UserName)
             };
+            var roles = await _userManager.GetRolesAsync(user);
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
             var key = new SymmetricSecurityKey (Encoding.UTF8.GetBytes (_config.GetSection ("AppSettings:Token").Value));
             var creds = new SigningCredentials (key, SecurityAlgorithms.HmacSha512Signature);
             var tokenDescriptor = new SecurityTokenDescriptor {
