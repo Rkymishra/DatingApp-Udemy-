@@ -20,7 +20,8 @@ export class HasRoleDirective implements OnInit {
     private authService: AuthService
   ) {}
   ngOnInit() {
-    const userRoles = this.authService.decodedToken.role as Array<string>;
+    const userRoles =
+    this.authService.decodedToken.role as Array<string>;
     if (!userRoles) {
       this.viewContainerRef.clear();
     }
