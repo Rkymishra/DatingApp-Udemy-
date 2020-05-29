@@ -38,10 +38,10 @@ namespace DatingApp.API.Controllers {
 
         [Authorize (Policy = "RequireAdminRole")]
         [HttpPost ("editRoles/{userName}")]
-        public async Task<IActionResult> EditRoles (string userName, RoleEditDto editDto) {
+        public async Task<IActionResult> EditRoles (string userName, RoleEditDto roleEditDto) {
             var user = await _userManager.FindByNameAsync (userName);
             var userRole = await _userManager.GetRolesAsync (user);
-            var selectedRoles = editDto.RoleNames;
+            var selectedRoles = roleEditDto.RoleNames;
             selectedRoles = selectedRoles ?? new string[] { };
             var result = await _userManager.AddToRolesAsync (user, selectedRoles.Except (userRole));
             if (!result.Succeeded) {
