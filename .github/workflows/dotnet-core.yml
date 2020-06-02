@@ -18,4 +18,4 @@ jobs:
 
     - name: MSBuild
       working-directory: DatingApp.API
-      run: msbuild DatingApp.API\DatingApp.API.csproj
+      run: msbuild DatingApp.API.csproj
