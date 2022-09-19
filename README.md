@@ -1,7 +1,7 @@
 # DatingApp-Udemy-
 
 #You need to add appsettings.json 
-
+```
 {
   "AppSettings" : {
     "Token" : "can be any secret key"
@@ -18,3 +18,4 @@
   },
   "AllowedHosts": "*"
 }
+```
